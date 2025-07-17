@@ -1,7 +1,5 @@
-if (pos_weight.defined()) {
-  // pos_weight need to be broadcasted, thus mul(target) is not inplace.
-  auto log_weight = (pos_weight - 1).mul(target).add_(1);
-  loss = (1 - target).mul_(input).sub_(log_weight.mul_(at::log_sigmoid(input)));
-} else {
-  loss = (1 - target).mul_(input).sub_(at::log_sigmoid(input));
-}
+    Tensor indices_mult_cpu = at::from_blob(
+      indices_mult_cpu_vec.data(),
+      indices.options().device(kCPU).dtype(kLong));
+    Tensor indices_mult = indices_mult_cpu.to(indices.device(), /*non_blocking=*/false);
+    return indices.mul(indices_mult).sum(0);
